@@ -1,0 +1,10 @@
+bin/
+obj/
+*.user
+.vs/
+publish/
+release/
+design/
+*.smkey
+*.masked*.xlsx
+*.revealed*.xlsx

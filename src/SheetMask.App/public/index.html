@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SheetMask</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="logo" aria-hidden="true"></span>SheetMask</div>
+  <nav class="tabs" role="tablist">
+    <button class="tab on" data-view="mask" data-t="mask"></button>
+    <button class="tab" data-view="reveal" data-t="reveal"></button>
+  </nav>
+  <div class="file" id="fileChip"></div>
+  <button class="lang" id="lang" title="Language"></button>
+</header>
+
+<section id="maskView" class="view">
+  <div id="empty" class="empty">
+    <div class="empty-box">
+      <h1 data-t="emptyTitle"></h1>
+      <p data-t="emptyBody"></p>
+      <button class="btn" id="openBtn" data-t="open"></button>
+      <div class="loading hidden" id="loading"><span class="spin"></span><span data-t="reading"></span><small data-t="readingBig"></small></div>
+      <div class="err hidden" id="openErr"></div>
+    </div>
+  </div>
+
+  <div id="work" class="work hidden">
+    <aside class="side">
+      <h4 data-t="sheets"></h4>
+      <div id="sheetList"></div>
+      <div class="hdr">
+        <label for="hdrRow" data-t="headerRow"></label>
+        <div class="row"><input id="hdrRow" type="number" min="0"><button class="ghost sm" id="hdrApply" data-t="apply"></button></div>
+      </div>
+      <button class="ghost wide" id="openOther" data-t="openOther"></button>
+    </aside>
+
+    <main class="main">
+      <div class="mh">
+        <div><h2 id="sheetTitle"></h2><p id="sheetRows"></p></div>
+        <div class="seg" role="tablist">
+          <button class="on" data-pane="columns" data-t="columns"></button>
+          <button data-pane="preview" data-t="preview"></button>
+        </div>
+      </div>
+      <div id="colPane" class="pane-scroll">
+        <table class="cols">
+          <thead><tr><th data-t="thColumn"></th><th data-t="thAs"></th><th data-t="thExample"></th><th data-t="thWhy"></th></tr></thead>
+          <tbody id="colBody"></tbody>
+        </table>
+      </div>
+      <div id="prevPane" class="prev hidden">
+        <p class="note" id="prevNote"></p>
+        <div class="twin">
+          <div class="grid-pane"><h5 data-t="original"></h5><div class="gscroll" id="gBefore"></div></div>
+          <div class="grid-pane"><h5 data-t="aiSees"></h5><div class="gscroll" id="gAfter"></div></div>
+        </div>
+      </div>
+    </main>
+
+    <aside class="right">
+      <div class="block">
+        <h4 data-t="amounts"></h4>
+        <label class="opt"><input type="checkbox" id="oShared"><span><b data-t="sharedFactor"></b><small data-t="sharedFactorHint"></small></span></label>
+        <label class="opt"><input type="checkbox" id="oRound"><span><b data-t="round"></b><small data-t="roundHint"></small></span></label>
+        <label class="f" for="oNoise" data-t="noise"></label>
+        <input type="number" id="oNoise" min="0" max="20" step="0.5">
+        <small class="hint" data-t="noiseHint"></small>
+      </div>
+      <div class="block">
+        <h4 data-t="other"></h4>
+        <label class="opt"><input type="checkbox" id="oWeekday"><span><b data-t="weekday"></b></span></label>
+        <label class="opt"><input type="checkbox" id="oScan"><span><b data-t="scan"></b><small data-t="scanHint"></small></span></label>
+        <label class="opt"><input type="checkbox" id="oComments"><span><b data-t="comments"></b></span></label>
+        <label class="opt"><input type="checkbox" id="oProps"><span><b data-t="props"></b></span></label>
+      </div>
+      <div class="block">
+        <label class="f" for="pw1" data-t="password"></label>
+        <input type="password" id="pw1" autocomplete="new-password">
+        <label class="f" for="pw2" data-t="password2"></label>
+        <input type="password" id="pw2" autocomplete="new-password">
+        <small class="hint" data-t="pwHint"></small>
+        <div class="err hidden" id="runErr"></div>
+        <button class="btn wide" id="runBtn" data-t="run"></button>
+        <div class="progress hidden" id="progress"><span class="spin"></span><span id="stage"></span></div>
+      </div>
+      <div class="block result hidden" id="result"></div>
+    </aside>
+  </div>
+</section>
+
+<section id="revealView" class="view hidden">
+  <div class="reveal">
+    <aside class="rcol">
+      <div class="card">
+        <h3 data-t="keyTitle"></h3>
+        <p class="muted" id="keyName" data-t="locked"></p>
+        <button class="ghost" id="keyChoose" data-t="chooseKey"></button>
+        <label class="f" for="keyPw" data-t="password"></label>
+        <input type="password" id="keyPw" autocomplete="off">
+        <div class="err hidden" id="keyErr"></div>
+        <button class="btn wide" id="keyUnlock" data-t="unlock"></button>
+        <div class="ok hidden" id="keyOk"></div>
+      </div>
+      <div class="card">
+        <h3 data-t="xlsxTitle"></h3>
+        <p class="muted" data-t="xlsxBody"></p>
+        <button class="ghost wide" id="xlsxBtn" data-t="xlsxBtn" disabled></button>
+        <div id="xlsxOut"></div>
+      </div>
+    </aside>
+    <main class="rmain">
+      <label class="f" for="aiText" data-t="pasteTitle"></label>
+      <textarea id="aiText" spellcheck="false"></textarea>
+      <div class="ropts">
+        <label class="opt inline"><input type="checkbox" id="rDates" checked><span><b data-t="dates"></b></span></label>
+        <label class="opt inline"><input type="checkbox" id="rNumbers"><span><b data-t="divide"></b><small data-t="divideHint"></small></span></label>
+        <button class="btn" id="revealBtn" data-t="revealBtn" disabled></button>
+      </div>
+      <div class="outhead"><label class="f" data-t="result"></label><span class="muted" id="revCount"></span><button class="ghost sm" id="copyBtn" data-t="copy"></button></div>
+      <textarea id="realText" readonly></textarea>
+    </main>
+  </div>
+</section>
+
+<script src="i18n.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
